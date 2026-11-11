@@ -5,16 +5,21 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Instalar desde este tap
+      - name: Revisar e instalar el cask de este commit
         run: |
           brew tap-new --no-git local/test
           mkdir -p "$(brew --repository local/test)/Casks"
           cp Casks/*.rb "$(brew --repository local/test)/Casks/"
+          brew trust local/test
           brew style local/test
           brew audit --cask --online local/test/screensaver-fx
           brew install --cask local/test/screensaver-fx
           xattr -l "$HOME/Library/Screen Savers/ScreensaverFX.saver"
-          test -d "$HOME/Library/Screen Savers/ScreensaverFX.saver"
           ! xattr -p com.apple.quarantine "$HOME/Library/Screen Savers/ScreensaverFX.saver" 2>/dev/null
           brew uninstall --cask local/test/screensaver-fx
           test ! -d "$HOME/Library/Screen Savers/ScreensaverFX.saver"
+      - name: Como lo instala un usuario
+        if: github.ref == 'refs/heads/main'
+        run: |
+          brew install --cask thealejandro/tap/screensaver-fx || { brew trust thealejandro/tap; brew install --cask thealejandro/tap/screensaver-fx; echo "::warning::hace falta brew trust"; }
+          test -d "$HOME/Library/Screen Savers/ScreensaverFX.saver"
