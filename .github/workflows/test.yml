@@ -8,6 +8,7 @@ jobs:
       - name: Instalar desde este tap
         run: |
           brew tap-new --no-git local/test
+          mkdir -p "$(brew --repository local/test)/Casks"
           cp Casks/*.rb "$(brew --repository local/test)/Casks/"
           brew style local/test
           brew audit --cask --online local/test/screensaver-fx
