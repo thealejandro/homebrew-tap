@@ -13,6 +13,7 @@ jobs:
           brew style local/test
           brew audit --cask --online local/test/screensaver-fx
           brew install --cask local/test/screensaver-fx
+          xattr -l "$HOME/Library/Screen Savers/ScreensaverFX.saver"
           test -d "$HOME/Library/Screen Savers/ScreensaverFX.saver"
           ! xattr -p com.apple.quarantine "$HOME/Library/Screen Savers/ScreensaverFX.saver" 2>/dev/null
           brew uninstall --cask local/test/screensaver-fx

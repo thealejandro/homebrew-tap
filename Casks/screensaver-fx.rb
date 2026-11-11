@@ -12,14 +12,13 @@ cask "screensaver-fx" do
     strategy :github_latest
   end
 
-  depends_on macos: ">= :big_sur"
+  depends_on macos: :big_sur
 
   screen_saver "ScreensaverFX.saver"
 
-  # Sin firma de Apple: se quita la cuarentena para que macOS deje cargarlo.
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-dr", "com.apple.quarantine", "#{Dir.home}/Library/Screen Savers/ScreensaverFX.saver"]
+  # Sin firma de Apple: se quita la cuarentena antes de instalarlo para que macOS deje cargarlo.
+  preflight_steps do
+    run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{staged_path}}/ScreensaverFX.saver"]
   end
 
   zap trash: [
