@@ -1,0 +1,25 @@
+# Sube el cask a la última release de screensaver-fx (sin tokens extra: solo el del propio repo).
+name: update
+on:
+  schedule: [{ cron: '23 * * * *' }]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          R=thealejandro/screensaver-fx; F=Casks/screensaver-fx.rb
+          V=$(gh release view -R "$R" --json tagName --jq .tagName); V=${V#v}
+          grep -q "version \"$V\"" "$F" && { echo "Ya en $V"; exit 0; }
+          S=$(gh release download "v$V" -R "$R" -p SHA256SUMS.txt -O - | awk '$2=="ScreensaverFX-macOS.zip"{print $1}')
+          [ ${#S} -eq 64 ]
+          sed -i -E "s/^  version \".*\"/  version \"$V\"/; s/^  sha256 \".*\"/  sha256 \"$S\"/" "$F"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -qam "screensaver-fx $V" && git push
