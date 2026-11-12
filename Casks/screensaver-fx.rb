@@ -1,6 +1,6 @@
 cask "screensaver-fx" do
-  version "0.1.15"
-  sha256 "c27214b692770b95c4f1ff8f279499200c5d88f2c3cfe82ab81c45af210bafc6"
+  version "0.1.16"
+  sha256 "c8f89dcf6a831608822abc31ba380f592be907f8ece14bbbe1aa44173599cc12"
 
   url "https://github.com/thealejandro/screensaver-fx/releases/download/v#{version}/ScreensaverFX-macOS.zip"
   name "Screensaver FX"
